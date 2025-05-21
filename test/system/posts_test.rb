@@ -3,6 +3,7 @@ require "application_system_test_case"
 class PostsTest < ApplicationSystemTestCase
   setup do
     @post = posts(:one)
+    login_as users(:one)
   end
 
   test "visiting the index" do
@@ -14,7 +15,7 @@ class PostsTest < ApplicationSystemTestCase
     visit posts_url
     click_on "New post"
 
-    fill_in "Body", with: @post.body
+    find(".trix-content").set(@post.body)
     fill_in "Title", with: @post.title
     click_on "Create Post"
 
@@ -26,7 +27,7 @@ class PostsTest < ApplicationSystemTestCase
     visit post_url(@post)
     click_on "Edit this post", match: :first
 
-    fill_in "Body", with: @post.body
+    find(".trix-content").set(@post.body)
     fill_in "Title", with: @post.title
     click_on "Update Post"
 
@@ -39,5 +40,13 @@ class PostsTest < ApplicationSystemTestCase
     click_on "Destroy this post", match: :first
 
     assert_text "Post was successfully destroyed"
+  end
+
+  def login_as(user)
+    session = user.sessions.create!
+    Current.session = session
+    request = ActionDispatch::Request.new(Rails.application.env_config)
+    cookies = request.cookie_jar
+    cookies.signed[:session_id] = { value: session.id, httponly: true, same_site: :lax }
   end
 end
