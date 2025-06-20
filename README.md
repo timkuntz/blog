@@ -1,4 +1,4 @@
-# README
+# README (branch-c)
 
 DHH [Rails 8 Demo App](https://www.youtube.com/watch?v=X_Hw9P1iZfQ)
 
